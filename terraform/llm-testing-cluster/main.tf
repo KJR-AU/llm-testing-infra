@@ -41,6 +41,40 @@ resource "aws_iam_openid_connect_provider" "eks" {
   url             = aws_eks_cluster.cluster.identity[0].oidc[0].issuer
 }
 
+data "aws_iam_policy_document" "ebs_csi_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type        = "Federated"
+      identifiers = [aws_iam_openid_connect_provider.eks.arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")}:sub"
+      values   = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")}:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "ebs_csi" {
+  name               = "${var.cluster_name}-ebs-csi-driver"
+  assume_role_policy = data.aws_iam_policy_document.ebs_csi_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "ebs_csi" {
+  role       = aws_iam_role.ebs_csi.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+}
+
 
 
 resource "aws_eks_addon" "cluster_addon_node_monitoring" {
@@ -76,6 +110,18 @@ resource "aws_eks_addon" "cluster_addon_vpc_cni" {
   addon_name                  = "vpc-cni"
   addon_version               = var.cluster_addon_version_vpc_cni
   resolve_conflicts_on_update = "PRESERVE"
+}
+
+resource "aws_eks_addon" "cluster_addon_ebs_csi" {
+  cluster_name                = aws_eks_cluster.cluster.name
+  addon_name                  = "aws-ebs-csi-driver"
+  addon_version               = var.cluster_addon_version_ebs_csi
+  service_account_role_arn    = aws_iam_role.ebs_csi.arn
+  resolve_conflicts_on_update = "PRESERVE"
+
+  depends_on = [
+    aws_iam_role_policy_attachment.ebs_csi
+  ]
 }
 
 # Node group for Phoenix otel platform

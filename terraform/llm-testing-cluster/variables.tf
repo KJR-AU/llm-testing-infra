@@ -48,6 +48,11 @@ variable "cluster_addon_version_node_monitoring" {
   type        = string
 }
 
+variable "cluster_addon_version_ebs_csi" {
+  description = "The version of the EBS CSI driver addon"
+  type        = string
+}
+
 variable "vpc_cidr" {
   description = "CIDR block for the VPC."
   type        = string
