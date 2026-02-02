@@ -140,3 +140,20 @@ module "phoenix" {
   disk_size     = var.phoenix_disk_size
   ssh_key       = var.phoenix_ssh_key
 }
+
+# Node group for amca-manual-rag
+module "amca_manual_rag" {
+  source          = "./modules/phoenix"
+  cluster_name    = aws_eks_cluster.cluster.name
+  node_group_name = "amca-manual-rag"
+  role_name       = "llm-testing-node-group-role-amca-manual-rag"
+
+  subnet_ids   = module.vpc.private_subnet_ids
+  desired_size = var.amca_manual_rag_desired_size
+  max_size     = var.amca_manual_rag_max_size
+  min_size     = var.amca_manual_rag_min_size
+
+  instance_type = var.amca_manual_rag_instance_type
+  disk_size     = var.amca_manual_rag_disk_size
+  ssh_key       = var.amca_manual_rag_ssh_key
+}
