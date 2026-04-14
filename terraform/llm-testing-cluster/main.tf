@@ -142,18 +142,18 @@ module "phoenix" {
 }
 
 # Node group for amca-manual-rag
-module "amca_manual_rag" {
+module "gva" {
   source          = "./modules/phoenix"
   cluster_name    = aws_eks_cluster.cluster.name
-  node_group_name = "amca-manual-rag"
-  role_name       = "llm-testing-node-group-role-amca-manual-rag"
+  node_group_name = "gva"
+  role_name       = "llm-testing-node-group-role-gva"
 
   subnet_ids   = module.vpc.private_subnet_ids
-  desired_size = var.amca_manual_rag_desired_size
-  max_size     = var.amca_manual_rag_max_size
-  min_size     = var.amca_manual_rag_min_size
+  desired_size = var.gva_desired_size
+  max_size     = var.gva_max_size
+  min_size     = var.gva_min_size
 
-  instance_type = var.amca_manual_rag_instance_type
-  disk_size     = var.amca_manual_rag_disk_size
-  ssh_key       = var.amca_manual_rag_ssh_key
+  instance_type = var.gva_instance_type
+  disk_size     = var.gva_disk_size
+  ssh_key       = var.gva_ssh_key
 }

@@ -109,33 +109,33 @@ variable "phoenix_ssh_key" {
   type        = string
 }
 
-# amca-manual-rag node group variables
-variable "amca_manual_rag_desired_size" {
-  description = "The desired size of the amca-manual-rag EKS node group"
+# gva node group variables
+variable "gva_desired_size" {
+  description = "The desired size of the gva EKS node group"
   type        = number
 }
 
-variable "amca_manual_rag_max_size" {
-  description = "The maximum size of the amca-manual-rag EKS node group"
+variable "gva_max_size" {
+  description = "The maximum size of the gva EKS node group"
   type        = number
 }
 
-variable "amca_manual_rag_min_size" {
-  description = "The minimum size of the amca-manual-rag EKS node group"
+variable "gva_min_size" {
+  description = "The minimum size of the gva EKS node group"
   type        = number
 }
 
-variable "amca_manual_rag_instance_type" {
-  description = "The instance type for the amca-manual-rag EKS node group"
+variable "gva_instance_type" {
+  description = "The instance type for the gva EKS node group"
   type        = string
 }
 
-variable "amca_manual_rag_disk_size" {
-  description = "The disk size for the amca-manual-rag EKS node group instances"
+variable "gva_disk_size" {
+  description = "The disk size for the gva EKS node group instances"
   type        = number
 }
 
-variable "amca_manual_rag_ssh_key" {
-  description = "The SSH key name for accessing the amca-manual-rag EKS node group instances"
+variable "gva_ssh_key" {
+  description = "The SSH key name for accessing the gva EKS node group instances"
   type        = string
 }
